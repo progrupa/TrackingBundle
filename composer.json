@@ -1,0 +1,19 @@
+{
+    "name":         "progrupa/tracking-bundle",
+    "type":         "symfony-bundle",
+    "license":      "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Progrupa\\TrackingBundle\\": ""
+        }
+    },
+    "require": {
+        "php": ">=5.6.0",
+        "guzzlehttp/guzzle": "~6.0",
+        "jms/serializer": "dev-master"
+    },
+    "require-dev": {
+    },
+    "extra": {
+    }
+}
