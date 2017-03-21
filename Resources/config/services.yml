@@ -1,0 +1,15 @@
+services:
+    progrupa.tracking.client:
+        class: Progrupa\TrackingBundle\Tracking\Client
+        arguments:
+            - "@progrupa.tracking.http_client"
+            - "@serializer"
+
+
+    progrupa.tracking.http_client:
+        class: GuzzleHttp\Client
+        public: false
+        arguments:
+            options:
+                base_uri: '%progrupa.tracking.endpoint%'
+                headers: {Content-Type: 'application/json', TokenApiKey: '%progrupa.tracking.api_key%', TokenApiSite: '%progrupa.tracking.site_key%'}
