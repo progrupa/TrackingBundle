@@ -2,6 +2,7 @@
 
 namespace Progrupa\TrackingBundle\Tracking;
 
+use GuzzleHttp\Exception\ClientException;
 use JMS\Serializer\SerializerInterface;
 
 class Client
@@ -22,17 +23,27 @@ class Client
         $this->serializer = $serializer;
     }
 
-
+    /**
+     * @param $identifier
+     * @return Entry|null
+     */
     public function getUniversalTracker($identifier)
     {
-        $response = $this->http->request(
-            'get',
-            sprintf('pgut/%s', $identifier)
-        );
+        try {
+            $response = $this->http->request(
+                'get',
+                sprintf('pgut/%s', $identifier)
+            );
 
-        if ($response->getStatusCode() == 200) {
-            $entry = $this->serializer->deserialize($response->getBody()->getContents(), Entry::class, 'json');
-            return $entry;
+            if ($response->getStatusCode() == 200) {
+                $entry = $this->serializer->deserialize($response->getBody()->getContents(), Entry::class, 'json');
+
+                return $entry;
+            }
+        } catch (ClientException $ge) {
+            if ($ge->getCode() == 404) {
+                return null;
+            }
         }
         return null;
     }
