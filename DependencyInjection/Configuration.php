@@ -20,9 +20,9 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $treeBuilder->root('progrupa_tracking')
             ->children()
-                ->arrayNode('site_key')->isRequired(true)->prototype('scalar')->end()->end()
-                ->arrayNode('api_key')->isRequired(true)->prototype('scalar')->end()->end()
-                ->arrayNode('endpoint')->isRequired(true)->defaultValue('https://modelsdownload.com/pl/api/')->prototype('scalar')->end()->end()
+                ->scalarNode('site_key')->isRequired(true)->end()
+                ->scalarNode('api_key')->isRequired(true)->end()
+                ->scalarNode('endpoint')->isRequired(true)->defaultValue('https://modelsdownload.com/pl/api/')->end()
             ->end();
 
         return $treeBuilder;

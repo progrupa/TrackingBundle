@@ -11,11 +11,23 @@ class Client
     /** @var  SerializerInterface */
     private $serializer;
 
+    /**
+     * Client constructor.
+     * @param \GuzzleHttp\ClientInterface $http
+     * @param SerializerInterface $serializer
+     */
+    public function __construct(\GuzzleHttp\ClientInterface $http, SerializerInterface $serializer)
+    {
+        $this->http = $http;
+        $this->serializer = $serializer;
+    }
+
+
     public function getUniversalTracker($identifier)
     {
         $response = $this->http->request(
             'get',
-            sprintf('/pgut/%s', $identifier)
+            sprintf('pgut/%s', $identifier)
         );
 
         if ($response->getStatusCode() == 200) {
