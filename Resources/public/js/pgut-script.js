@@ -39,7 +39,7 @@
         }
 
         if (data.event === 'pgSetCookie') {
-            window.location.href = 'http://md.dev/pgut-set';
+            window.location.href = window._pgut.base + 'pgut-set';
             return;
         }
         if (data.event === 'pgTrackingSaved') {
@@ -69,7 +69,7 @@
 
             var iframe = document.createElement('iframe');
             iframe.style.display = "none";
-            iframe.src = 'http://md.dev/pgut-store/' + window._pgut.id + '/' + window._pgut.hash;
+            iframe.src = window._pgut.base + 'pgut-store/' + window._pgut.id + '/' + window._pgut.hash;
             document.body.appendChild(iframe);
         }
     };

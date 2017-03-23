@@ -11,5 +11,11 @@ services:
         public: false
         arguments:
             options:
-                base_uri: '%progrupa.tracking.endpoint%'
+                base_uri: '%progrupa.tracking.api_endpoint%'
                 headers: {Content-Type: 'application/json', TokenApiKey: '%progrupa.tracking.api_key%', TokenApiSite: '%progrupa.tracking.site_key%'}
+
+    progrupa.tracking.twig_extension:
+        class: Progrupa\TrackingBundle\Twig\TrackingExtension
+        arguments: ["%progrupa.tracking.endpoint%", "%progrupa.tracking.site_key%"]
+        tags:
+            - {name: twig.extension}

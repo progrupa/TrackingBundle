@@ -25,6 +25,7 @@ class ProgrupaTrackingExtension extends Extension
         $container->setParameter('progrupa.tracking.site_key', $config['site_key']);
         $container->setParameter('progrupa.tracking.api_key', $config['api_key']);
         $container->setParameter('progrupa.tracking.endpoint', $config['endpoint']);
+        $container->setParameter('progrupa.tracking.api_endpoint', $config['endpoint'] . 'api/');
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
