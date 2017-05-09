@@ -22,7 +22,11 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('site_key')->isRequired(true)->end()
                 ->scalarNode('api_key')->isRequired(true)->end()
-                ->scalarNode('endpoint')->isRequired(true)->defaultValue('https://modelsdownload.com/en/')->end()
+                ->scalarNode('endpoint')
+                    ->isRequired(true)
+                    ->defaultValue('https://modelsdownload.com/en/')
+                    ->treatNullLike('https://modelsdownload.com/en/')
+                ->end()
             ->end();
 
         return $treeBuilder;
