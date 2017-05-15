@@ -24,8 +24,8 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('api_key')->isRequired(true)->end()
                 ->scalarNode('endpoint')
                     ->isRequired(true)
-                    ->defaultValue('https://modelsdownload.com/en/')
-                    ->treatNullLike('https://modelsdownload.com/en/')
+                    ->defaultValue('https://modelsdownload.com/pl/')
+                    ->treatNullLike('https://modelsdownload.com/pl/')
                 ->end()
             ->end();
 
