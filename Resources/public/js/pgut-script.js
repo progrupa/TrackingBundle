@@ -61,7 +61,7 @@
                 if (typeof cookies !== 'undefined' && cookies !== null) {
                     var now = new Date();
                     var future = new Date(cookies);
-                    if (now.getTime() > future.getTime()) {
+                    if (now.getTime() < future.getTime()) { //  future hasn't passed yet, return
                         return false;
                     }
                 }
