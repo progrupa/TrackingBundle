@@ -3,7 +3,7 @@ services:
         class: Progrupa\TrackingBundle\Tracking\Client
         arguments:
             - "@progrupa.tracking.http_client"
-            - "@serializer"
+            - "@jms_serializer"
 
 
     progrupa.tracking.http_client:
