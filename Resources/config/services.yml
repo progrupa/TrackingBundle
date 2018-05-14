@@ -10,7 +10,7 @@ services:
         class: GuzzleHttp\Client
         public: false
         arguments:
-            options:
+            -
                 base_uri: '%progrupa.tracking.api_endpoint%'
                 headers: {Content-Type: 'application/json', TokenApiKey: '%progrupa.tracking.api_key%', TokenApiSite: '%progrupa.tracking.site_key%'}
 
