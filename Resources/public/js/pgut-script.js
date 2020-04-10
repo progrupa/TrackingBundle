@@ -39,6 +39,14 @@
         }
 
         if (data.event === 'pgSetCookie') {
+            if (typeof window.localStorage !== 'undefined') {
+                var loop = window.localStorage.getItem('_pgut_loop') || 1;
+                if (loop < 3) {
+                    window.localStorage.setItem('_pgut_loop', ++loop);
+                } else {
+                    return;
+                }
+            }
             window.location.href = window._pgut.base + 'pgut-set';
             return;
         }
@@ -63,6 +71,8 @@
                     var future = new Date(cookies);
                     if (now.getTime() < future.getTime()) { //  future hasn't passed yet, return
                         return false;
+                    } else {
+                        window.localStorage.removeItem('_pgut_loop');
                     }
                 }
             }
