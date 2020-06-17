@@ -3,7 +3,10 @@
 namespace Progrupa\TrackingBundle\Tracking;
 
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use JMS\Serializer\Exception\RuntimeException;
 use JMS\Serializer\SerializerInterface;
+use Psr\Log\LoggerInterface;
 
 class Client
 {
@@ -11,16 +14,19 @@ class Client
     private $http;
     /** @var  SerializerInterface */
     private $serializer;
+    /** @var LoggerInterface */
+    private $logger;
 
     /**
      * Client constructor.
      * @param \GuzzleHttp\ClientInterface $http
      * @param SerializerInterface $serializer
      */
-    public function __construct(\GuzzleHttp\ClientInterface $http, SerializerInterface $serializer)
+    public function __construct(\GuzzleHttp\ClientInterface $http, SerializerInterface $serializer, LoggerInterface $logger)
     {
         $this->http = $http;
         $this->serializer = $serializer;
+        $this->logger = $logger;
     }
 
     /**
@@ -40,10 +46,19 @@ class Client
 
                 return $entry;
             }
-        } catch (ClientException $ge) {
-            if ($ge->getCode() == 404) {
-                return null;
+        } catch (ClientException $ce) {
+            if ($ce->getCode() == 404) {
+                return null;    //  The info is just not there
+            } else {
+                //  Log an error and keep going
+                $this->logger->error(sprintf("Error loading tracking data: %s", $ce->getMessage()));
             }
+        } catch (RequestException $re) {
+            //  Log an error and keep going
+            $this->logger->error(sprintf("Error loading tracking data: %s", $re->getMessage()));
+        } catch (RuntimeException $sre) {
+            //  Log an error and keep going
+            $this->logger->error(sprintf("Error loading tracking data: %s", $sre->getMessage()));
         }
         return null;
     }

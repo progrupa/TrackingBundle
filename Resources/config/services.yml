@@ -4,7 +4,7 @@ services:
         arguments:
             - "@progrupa.tracking.http_client"
             - "@jms_serializer"
-
+            - "@logger"
 
     progrupa.tracking.http_client:
         class: GuzzleHttp\Client
