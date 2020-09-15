@@ -3,16 +3,6 @@
  *
  * postMessage works > IE7
  * http://caniuse.com/#search=postMessage
- *
- * Include like this (with 3 params: URL, ID, HASH):
-
-<script>
-    (function(m,o,d,e,l){
-        window._pgut={'id':o,'hash':d};e=document.createElement('script'),l=document.getElementsByTagName('script')[0];e.src=m;l.parentNode.insertBefore(e,l);
-    })('http://md.dev/js/pgut-script.js','md','{{ app.request.cookies.get('mdutr') }}');
-</script>
-
- * TODO: fix direct links
  **/
 
 (function() {
@@ -21,11 +11,6 @@
 
     var messageReceived = function(e) {
         var data;
-        // Only allow messages from central tracker
-        // Needs to be a regexp, not a direct match
-        // if (e.origin !== "http://www.models.dev") {
-        //     return;
-        // }
 
         try {
             data = JSON.parse(e.data);
@@ -39,60 +24,63 @@
         }
 
         if (data.event === 'pgSetCookie') {
-            if (typeof window.localStorage !== 'undefined') {
-                var loop = window.localStorage.getItem('_pgut_loop') || 1;
+            if (typeof storage !== 'undefined') {
+                var loop = storage.getItem('pgut-redirect-loop') || 1;
                 if (loop < 3) {
-                    window.localStorage.setItem('_pgut_loop', ++loop);
-                } else {
-                    return;
+                    storage.setItem('pgut-redirect-loop', ++loop);
+                    window.location.href = window._pgut.base + 'pgut-set';
                 }
+            } else {
+                window.location.href = window._pgut.base + 'pgut-set';
             }
-            window.location.href = window._pgut.base + 'pgut-set';
-            return;
         }
+
         if (data.event === 'pgTrackingSaved') {
-            //  Tracking was saved, no need to do it again,
-            //  do not include the iframe anymore?
-            if (typeof window.localStorage !== 'undefined') {
+            /** Tracking was saved, no need to do it again, do not include the iframe anymore */
+            if (typeof storage !== 'undefined') {
                 var tmp = new Date();
                 var future = new Date(tmp.setDate(tmp.getDate() + 365));
-                window.localStorage.setItem('_pgut_cookie', future);
+                storage.setItem('pgut-refresh-date', future);
             }
-            return;
         }
     };
 
     var appendIframe = function() {
-        if (window._pgut.hash) {
-            if (typeof window.localStorage !== 'undefined') {
-                var cookies = window.localStorage.getItem('_pgut_cookie');
-                if (typeof cookies !== 'undefined' && cookies !== null) {
-                    var now = new Date();
-                    var future = new Date(cookies);
-                    if (now.getTime() < future.getTime()) { //  future hasn't passed yet, return
-                        return false;
-                    } else {
-                        window.localStorage.removeItem('_pgut_loop');
-                    }
-                }
-            }
-
+        if (typeof window._pgut.hash !== 'undefined') {
             var iframe = document.createElement('iframe');
             iframe.style.display = "none";
             iframe.src = window._pgut.base + 'pgut-store/' + window._pgut.id + '/' + window._pgut.hash;
-            document.body.appendChild(iframe);
+
+            if (typeof storage !== 'undefined') {
+                var cookies = storage.getItem('pgut-refresh-date');
+                if (typeof cookies !== 'undefined' && cookies !== null) {
+                    var now = new Date();
+                    var future = new Date(cookies);
+                    if (now.getTime() >= future.getTime()) {
+                        storage.removeItem('pgut-redirect-loop');
+                        document.body.appendChild(iframe);
+                    }
+                } else {
+                    document.body.appendChild(iframe);
+
+                }
+            } else {
+                document.body.appendChild(iframe);
+            }
         }
     };
 
-    // Create IE + others compatible event handler
+    var storage = window.localStorage;
+
+    /** Create IE + others compatible event handler */
     var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
     var eventer = window[eventMethod];
 
-    // Append iframe to body
+    /** Append iframe to body */
     var loadEvent = (eventMethod === 'attachEvent') ? 'onload' : 'load';
     eventer(loadEvent, appendIframe, false);
 
-    // Listen to message from child window
+    /** Listen to message from child window */
     var messageEvent = (eventMethod === 'attachEvent') ? 'onmessage' : 'message';
     eventer(messageEvent, messageReceived, false);
 })(window);
