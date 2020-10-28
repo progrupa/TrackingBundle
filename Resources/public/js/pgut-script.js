@@ -24,14 +24,18 @@
         }
 
         if (data.event === 'pgSetCookie') {
+            var redirect = '';
+            if (typeof window._pgut.redirect !== 'undefined') {
+                redirect = '?redirect=' + window._pgut.redirect;
+            }
             if (typeof storage !== 'undefined') {
                 var loop = storage.getItem('pgut-redirect-loop') || 1;
                 if (loop < 3) {
                     storage.setItem('pgut-redirect-loop', ++loop);
-                    window.location.href = window._pgut.base + 'pgut-set';
+                    window.location.href = window._pgut.base + 'pgut-set' + redirect;
                 }
             } else {
-                window.location.href = window._pgut.base + 'pgut-set';
+                window.location.href = window._pgut.base + 'pgut-set' + redirect;
             }
         }
 
@@ -48,7 +52,7 @@
     var appendIframe = function() {
         if (typeof window._pgut.hash !== 'undefined') {
             var iframe = document.createElement('iframe');
-            iframe.style.display = "none";
+            iframe.style.cssText = 'display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;';
             iframe.src = window._pgut.base + 'pgut-store/' + window._pgut.id + '/' + window._pgut.hash;
 
             if (typeof storage !== 'undefined') {
