@@ -24,18 +24,18 @@
         }
 
         if (data.event === 'pgSetCookie') {
-            var redirect = '';
-            if (typeof window._pgut.redirect !== 'undefined') {
-                redirect = '?redirect=' + window._pgut.redirect;
+            var referer = '';
+            if (typeof window._pgut.referer !== 'undefined') {
+                referer = '?referer=' + window._pgut.referer;
             }
             if (typeof storage !== 'undefined') {
                 var loop = storage.getItem('pgut-redirect-loop') || 1;
                 if (loop < 3) {
                     storage.setItem('pgut-redirect-loop', ++loop);
-                    window.location.href = window._pgut.base + 'pgut-set' + redirect;
+                    window.location.href = window._pgut.base + 'pgut-set' + referer;
                 }
             } else {
-                window.location.href = window._pgut.base + 'pgut-set' + redirect;
+                window.location.href = window._pgut.base + 'pgut-set' + referer;
             }
         }
 
