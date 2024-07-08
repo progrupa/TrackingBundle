@@ -18,8 +18,8 @@
         if (data.event === 'pgSetCookie') {
             const ref = (typeof UT.referer !== 'undefined') ? ('?referer='+ UT.referer) : '';
             if (typeof LS !== 'undefined') {
-                let loop = parseInt(LS.getItem(TX.loop), 10) || 1;
-                if (loop < 3) {
+                let loop = parseInt(LS.getItem(TX.loop), 10) || 0;
+                if (loop < 2) { /** max two refresh */
                     LS.setItem(TX.loop, (++loop).toString());
                     window.location.href = UT.base +'pgut-set'+ ref;
                 }
