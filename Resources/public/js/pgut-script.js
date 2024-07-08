@@ -40,7 +40,7 @@
         if (typeof UT.hash !== 'undefined') {
             const $frame = document.createElement('iframe');
             $frame.style.cssText = 'display:none !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important;';
-            $frame.src = UT.base +'pgut-LS/'+ UT.id +'/'+ UT.hash;
+            $frame.src = UT.base +'pgut-store/'+ UT.id +'/'+ UT.hash;
             const $body = document.body;
 
             if (typeof LS !== 'undefined') {
