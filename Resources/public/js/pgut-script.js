@@ -1,90 +1,67 @@
-/**
- * User tracking script
- *
- * postMessage works > IE7
- * http://caniuse.com/#search=postMessage
- **/
-
+/** ProGroup User Tracking script */
 (function() {
-
     'use strict';
 
-    var messageReceived = function(e) {
-        var data;
+    const LS = window.localStorage;
+    const UT = window._pgut;
+    const TX = {
+        loop: 'pgut-redirect-loop',
+        date: 'pgut-refresh-date'
+    };
 
-        try {
-            data = JSON.parse(e.data);
-        }
-        catch (err) {
-            return;
-        }
-
-        if (typeof data !== 'object' || typeof data.event !== 'string' || typeof data.data === 'undefined') {
-            return;
-        }
+    function messageReceived (e) {
+        let data;
+        try { data = JSON.parse(e.data); }
+        catch (err) { return; }
+        if (typeof data !== 'object' || typeof data.event !== 'string' || typeof data.data === 'undefined') { return; }
 
         if (data.event === 'pgSetCookie') {
-            var referer = '';
-            if (typeof window._pgut.referer !== 'undefined') {
-                referer = '?referer=' + window._pgut.referer;
-            }
-            if (typeof storage !== 'undefined') {
-                var loop = storage.getItem('pgut-redirect-loop') || 1;
+            const ref = (typeof UT.referer !== 'undefined') ? ('?referer='+ UT.referer) : '';
+            if (typeof LS !== 'undefined') {
+                let loop = parseInt(LS.getItem(TX.loop), 10) || 1;
                 if (loop < 3) {
-                    storage.setItem('pgut-redirect-loop', ++loop);
-                    window.location.href = window._pgut.base + 'pgut-set' + referer;
+                    LS.setItem(TX.loop, (++loop).toString());
+                    window.location.href = UT.base +'pgut-set'+ ref;
                 }
-            } else {
-                window.location.href = window._pgut.base + 'pgut-set' + referer;
+            // } else {
+            //     window.location.href = UT.base +'pgut-set'+ ref;
             }
         }
 
-        if (data.event === 'pgTrackingSaved') {
-            /** Tracking was saved, no need to do it again, do not include the iframe anymore */
-            if (typeof storage !== 'undefined') {
-                var tmp = new Date();
-                var future = new Date(tmp.setDate(tmp.getDate() + 365));
-                storage.setItem('pgut-refresh-date', future);
+        if (data.event === 'pgTrackingSaved') { /** Tracking was saved, no need to do it again, do not include the iframe anymore */
+            if (typeof LS !== 'undefined') {
+                const now = new Date();
+                LS.setItem(TX.date, new Date(now.setDate(now.getDate() + 365)).toString());
             }
         }
-    };
+    }
 
-    var appendIframe = function() {
-        if (typeof window._pgut.hash !== 'undefined') {
-            var iframe = document.createElement('iframe');
-            iframe.style.cssText = 'display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;';
-            iframe.src = window._pgut.base + 'pgut-store/' + window._pgut.id + '/' + window._pgut.hash;
+    function appendIframe () {
+        if (typeof UT.hash !== 'undefined') {
+            const $frame = document.createElement('iframe');
+            $frame.style.cssText = 'display:none !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important;';
+            $frame.src = UT.base +'pgut-LS/'+ UT.id +'/'+ UT.hash;
+            const $body = document.body;
 
-            if (typeof storage !== 'undefined') {
-                var cookies = storage.getItem('pgut-refresh-date');
-                if (typeof cookies !== 'undefined' && cookies !== null) {
-                    var now = new Date();
-                    var future = new Date(cookies);
-                    if (now.getTime() >= future.getTime()) {
-                        storage.removeItem('pgut-redirect-loop');
-                        document.body.appendChild(iframe);
+            if (typeof LS !== 'undefined') {
+                const future = LS.getItem(TX.date);
+                if (typeof future !== 'undefined' && future !== null) {
+                    const now = new Date();
+                    if (now.getTime() >= new Date(future).getTime()) {
+                        LS.removeItem(TX.loop);
+                        $body.appendChild($frame);
                     }
                 } else {
-                    document.body.appendChild(iframe);
-
+                    $body.appendChild($frame);
                 }
             } else {
-                document.body.appendChild(iframe);
+                $body.appendChild($frame);
             }
         }
-    };
+    }
 
-    var storage = window.localStorage;
-
-    /** Create IE + others compatible event handler */
-    var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
-    var eventer = window[eventMethod];
-
-    /** Append iframe to body */
-    var loadEvent = (eventMethod === 'attachEvent') ? 'onload' : 'load';
-    eventer(loadEvent, appendIframe, false);
-
-    /** Listen to message from child window */
-    var messageEvent = (eventMethod === 'attachEvent') ? 'onmessage' : 'message';
-    eventer(messageEvent, messageReceived, false);
+    const method = window.addEventListener ? 'addEventListener' : 'attachEvent';
+    const trigger = window[method];
+    trigger(((method === 'attachEvent') ? 'onload' : 'load'), appendIframe, false); /** Append iframe to body */
+    trigger(((method === 'attachEvent') ? 'onmessage' : 'message'), messageReceived, false); /** Listen to message from child window */
 })(window);
