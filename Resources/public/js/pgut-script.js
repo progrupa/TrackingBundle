@@ -11,27 +11,22 @@
 
     function messageReceived (e) {
         let data;
-        try { data = JSON.parse(e.data); }
-        catch (err) { return; }
+        try { data = JSON.parse(e.data); } catch (err) { return; }
         if (typeof data !== 'object' || typeof data.event !== 'string' || typeof data.data === 'undefined') { return; }
 
-        if (data.event === 'pgSetCookie') {
-            const ref = (typeof UT.referer !== 'undefined') ? ('?referer='+ UT.referer) : '';
-            if (typeof LS !== 'undefined') {
-                let loop = parseInt(LS.getItem(TX.loop), 10) || 0;
+        if (typeof LS !== 'undefined') {
+            if (data.event === 'pgTrackingSaved') { /** Tracking was saved, no need to do it again, do not include the iframe anymore */
+            const now = new Date();
+                LS.setItem(TX.date, new Date(now.setDate(now.getDate() + 365)).toString());
+            }
+
+            if (data.event === 'pgSetCookie') {
+                let loop = LS.getItem(TX.loop) ? parseInt(LS.getItem(TX.loop), 10) : 0;
                 if (loop < 2) { /** max two refresh */
+                const ref = (typeof UT.referer !== 'undefined') ? ('?referer='+ UT.referer) : '';
                     LS.setItem(TX.loop, (++loop).toString());
                     window.location.href = UT.base +'pgut-set'+ ref;
                 }
-            // } else {
-            //     window.location.href = UT.base +'pgut-set'+ ref;
-            }
-        }
-
-        if (data.event === 'pgTrackingSaved') { /** Tracking was saved, no need to do it again, do not include the iframe anymore */
-            if (typeof LS !== 'undefined') {
-                const now = new Date();
-                LS.setItem(TX.date, new Date(now.setDate(now.getDate() + 365)).toString());
             }
         }
     }
