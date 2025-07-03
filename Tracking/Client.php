@@ -59,7 +59,7 @@ class Client
                 'pgut-batch',
                 [
                     'json' => $hashes,
-                    'verify' => false   //  Disable SSL verification for local development
+//                    'verify' => false   //  Disable SSL verification for local development
                 ]
             );
             if ($response->getStatusCode() == 200) {
