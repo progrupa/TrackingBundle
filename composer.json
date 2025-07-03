@@ -9,7 +9,7 @@
     },
     "require": {
         "php": ">=7.4",
-        "guzzlehttp/guzzle": "~7.0",
+        "guzzlehttp/guzzle": "~6.0|~7.0",
         "jms/serializer": "~1.11",
         "twig/twig": "~1.12"
     },

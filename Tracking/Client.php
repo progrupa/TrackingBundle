@@ -29,37 +29,48 @@ class Client
         $this->logger = $logger;
     }
 
-    /**
-     * @param $identifier
-     * @return Entry|null
-     */
-    public function getUniversalTracker($identifier)
+    public function getUniversalTracker(string $identifier): ?Entry
     {
         try {
             $response = $this->http->request(
                 'get',
-                sprintf('pgut/%s', $identifier)
+                sprintf('pgut-get/%s', $identifier)
             );
 
             if ($response->getStatusCode() == 200) {
                 $entry = $this->serializer->deserialize($response->getBody()->getContents(), Entry::class, 'json');
 
                 return $entry;
+            } else {    //  other codes mean no data
+                return null;
             }
-        } catch (ClientException $ce) {
-            if ($ce->getCode() == 404) {
-                return null;    //  The info is just not there
-            } else {
-                //  Log an error and keep going
-                $this->logger->error(sprintf("Error loading tracking data: %s", $ce->getMessage()));
-            }
-        } catch (RequestException $re) {
+        } catch (\Throwable $re) {
             //  Log an error and keep going
             $this->logger->error(sprintf("Error loading tracking data: %s", $re->getMessage()));
-        } catch (RuntimeException $sre) {
-            //  Log an error and keep going
-            $this->logger->error(sprintf("Error loading tracking data: %s", $sre->getMessage()));
         }
         return null;
+    }
+
+    public function getTrackerBatch(array $hashes): array
+    {
+        try {
+            $response = $this->http->request(
+                'post',
+                'pgut-batch',
+                [
+                    'json' => $hashes,
+                    'verify' => false   //  Disable SSL verification for local development
+                ]
+            );
+            if ($response->getStatusCode() == 200) {
+                return json_decode($response->getBody()->getContents(), true);
+            } else {    //  other codes mean no data
+                return [];
+            }
+        } catch (\Throwable $re) {
+            //  Log an error and keep going
+            $this->logger->error(sprintf("Error loading tracking data: %s", $re->getMessage()));
+        }
+        return [];
     }
 }
