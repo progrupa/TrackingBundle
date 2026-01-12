@@ -2,7 +2,10 @@
 
 namespace Progrupa\TrackingBundle\Twig;
 
-class TrackingExtension extends \Twig_Extension
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+
+class TrackingExtension extends AbstractExtension
 {
     /** @var  string */
     private $trackerBaseUrl;
@@ -20,17 +23,11 @@ class TrackingExtension extends \Twig_Extension
         $this->trackerSiteId = $trackerSiteId;
     }
 
-    public function getName()
-    {
-        'progrupa_tracking_twig_extension';
-    }
-
-
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('progrupa_tracker_endpoint', [$this, 'getTrackerBaseUrl']),
-            new \Twig_SimpleFunction('progrupa_tracker_site', [$this, 'getTrackerSiteId']),
+            new TwigFunction('progrupa_tracker_endpoint', [$this, 'getTrackerBaseUrl']),
+            new TwigFunction('progrupa_tracker_site', [$this, 'getTrackerSiteId']),
         ];
     }
 
