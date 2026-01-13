@@ -17,8 +17,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('progrupa_tracking')
+        $treeBuilder = new TreeBuilder('progrupa_tracking');
+        $treeBuilder->getRootNode()
             ->children()
                 ->scalarNode('site_key')->isRequired(true)->end()
                 ->scalarNode('api_key')->isRequired(true)->end()
