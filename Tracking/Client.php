@@ -4,9 +4,8 @@ namespace Progrupa\TrackingBundle\Tracking;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-use JMS\Serializer\Exception\RuntimeException;
-use JMS\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class Client
 {

@@ -3,20 +3,18 @@
 namespace Progrupa\TrackingBundle\Tracking;
 
 
-use JMS\Serializer\Annotation as Serializer;
-
 class Entry
 {
     /**
-     * @Serializer\Type("string")
+     * @var string
      */
     private $pgut;
     /**
-     * @Serializer\Type("string")
+     * @var string
      */
     private $site;
     /**
-     * @Serializer\Type("string")
+     * @var string
      */
     private $siteHash;
 
@@ -29,6 +27,14 @@ class Entry
     }
 
     /**
+     * @param string $pgut
+     */
+    public function setPgut($pgut)
+    {
+        $this->pgut = $pgut;
+    }
+
+    /**
      * @return mixed
      */
     public function getSite()
@@ -37,10 +43,26 @@ class Entry
     }
 
     /**
+     * @param string $site
+     */
+    public function setSite($site)
+    {
+        $this->site = $site;
+    }
+
+    /**
      * @return mixed
      */
     public function getSiteHash()
     {
         return $this->siteHash;
+    }
+
+    /**
+     * @param string $siteHash
+     */
+    public function setSiteHash($siteHash)
+    {
+        $this->siteHash = $siteHash;
     }
 }
