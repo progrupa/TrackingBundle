@@ -19,7 +19,7 @@ class Entry
     private $siteHash;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPgut()
     {
@@ -29,13 +29,13 @@ class Entry
     /**
      * @param string $pgut
      */
-    public function setPgut($pgut)
+    public function setPgut(string $pgut)
     {
         $this->pgut = $pgut;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSite()
     {
@@ -45,13 +45,13 @@ class Entry
     /**
      * @param string $site
      */
-    public function setSite($site)
+    public function setSite(string $site)
     {
         $this->site = $site;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSiteHash()
     {
@@ -61,7 +61,7 @@ class Entry
     /**
      * @param string $siteHash
      */
-    public function setSiteHash($siteHash)
+    public function setSiteHash(string $siteHash)
     {
         $this->siteHash = $siteHash;
     }
