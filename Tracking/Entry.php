@@ -29,7 +29,7 @@ class Entry
     /**
      * @param string $pgut
      */
-    public function setPgut(string $pgut)
+    public function setPgut(string $pgut): void
     {
         $this->pgut = $pgut;
     }
@@ -45,7 +45,7 @@ class Entry
     /**
      * @param string $site
      */
-    public function setSite(string $site)
+    public function setSite(string $site): void
     {
         $this->site = $site;
     }
@@ -61,7 +61,7 @@ class Entry
     /**
      * @param string $siteHash
      */
-    public function setSiteHash(string $siteHash)
+    public function setSiteHash(string $siteHash): void
     {
         $this->siteHash = $siteHash;
     }
